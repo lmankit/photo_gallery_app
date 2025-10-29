@@ -95,7 +95,7 @@ class _PhotoListScreenState extends ConsumerState<PhotoListScreen> {
               );
             },
           ),
-          Text('Page $currentPage of $totalPages'),
+          if (totalPages > 0) Text('Page $currentPage of $totalPages'),
           const SizedBox(height: 20),
         ],
       ),

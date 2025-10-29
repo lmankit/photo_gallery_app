@@ -1,18 +1,42 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
 import 'package:photo_gallery_app/models/photo.dart';
 import 'package:photo_gallery_app/providers/photo/photo_providers.dart';
+import 'package:photo_gallery_app/providers/service_providers.dart';
 import 'package:photo_gallery_app/services/api.dart';
+import 'package:photo_gallery_app/services/database.dart';
 
-class MockApiService extends Mock implements ApiService {}
+class FakeApiService implements ApiService {
+  FakeApiService(this.photos);
+  final List<Photo> photos;
+  @override
+  Future<List<Photo>> fetchPhotos() async => photos;
+}
+
+class TestDatabaseService extends DatabaseService {
+  final List<Photo> _cache = [];
+
+  @override
+  Future<void> cachePhotos(List<Photo> photos) async {
+    _cache
+      ..clear()
+      ..addAll(photos);
+  }
+
+  @override
+  Future<void> clearCache() async {
+    _cache.clear();
+  }
+
+  @override
+  Future<List<Photo>> getCachedPhotos() async {
+    return List<Photo>.from(_cache);
+  }
+}
 
 void main() {
   group('Photo Providers Tests', () {
     test('fetchAllPhotos returns sorted photos', () async {
-      // Mock the API service
-      final mockApiService = MockApiService();
-
       final mockPhotos = [
         const Photo(
           id: '1',
@@ -34,11 +58,17 @@ void main() {
         ),
       ];
 
-      when(mockApiService.fetchPhotos()).thenAnswer((_) async => mockPhotos);
+      final container = ProviderContainer(
+        overrides: [
+          apiServiceProvider.overrideWithValue(FakeApiService(mockPhotos)),
+          databaseServiceProvider.overrideWithValue(TestDatabaseService()),
+        ],
+      );
 
-      // Test: verify photos are sorted by takenAt (newest first)
-      expect(
-          mockPhotos[1].takenAtDate.isAfter(mockPhotos[0].takenAtDate), true);
+      final photos = await container.read(fetchPhotosProvider.future);
+
+      // Verify sorted by takenAt (newest first)
+      expect(photos.first.takenAtDate.isAfter(photos.last.takenAtDate), true);
     });
 
     test('searchQuery filter works correctly', () async {

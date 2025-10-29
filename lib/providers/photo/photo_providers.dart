@@ -52,8 +52,7 @@ Future<List<Photo>> filteredPhotos(Ref ref) async {
   }
   return photos.where((photo) {
     final query = searchQuery.toLowerCase();
-    return photo.description.toLowerCase().contains(query) ||
-        photo.location.toLowerCase().contains(query) ||
+    return photo.location.toLowerCase().contains(query) ||
         photo.createdBy.toLowerCase().contains(query);
   }).toList();
 }
@@ -61,7 +60,8 @@ Future<List<Photo>> filteredPhotos(Ref ref) async {
 // Refresh photos manually
 @riverpod
 Future<void> refreshPhotos(Ref ref) async {
-  return ref.refresh(fetchPhotosProvider.future);
+  ref.invalidate(fetchPhotosProvider);
+  await ref.read(fetchPhotosProvider.future);
 }
 
 @riverpod
