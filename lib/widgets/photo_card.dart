@@ -73,12 +73,30 @@ class PhotoCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    DateFormat('MMM dd, yyyy').format(photo.takenAtDate),
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                    ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      const Icon(Icons.person, size: 16, color: Colors.grey),
+                      const SizedBox(width: 4),
+                      Text(
+                        photo.createdBy,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      const Spacer(),
+                      const Icon(Icons.calendar_month,
+                          size: 16, color: Colors.grey),
+                      const SizedBox(width: 4),
+                      Text(
+                        DateFormat('MMM dd, yyyy').format(photo.takenAtDate),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

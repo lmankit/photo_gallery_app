@@ -5,7 +5,10 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'photo_providers.g.dart';
 
+const pageSize = 10;
+
 final searchQueryProvider = StateProvider<String>((ref) => '');
+final currentPageProvider = StateProvider<int>((ref) => 1);
 
 @riverpod
 Future<List<Photo>> fetchPhotos(Ref ref) async {
@@ -59,4 +62,21 @@ Future<List<Photo>> filteredPhotos(Ref ref) async {
 @riverpod
 Future<void> refreshPhotos(Ref ref) async {
   return ref.refresh(fetchPhotosProvider.future);
+}
+
+@riverpod
+Future<int> totalPages(Ref ref) async {
+  final photos = await ref.watch(filteredPhotosProvider.future);
+  return (photos.length / pageSize).ceil();
+}
+
+@riverpod
+Future<List<Photo>> paginatedPhotos(Ref ref) async {
+  final currentPage = ref.watch(currentPageProvider);
+  final totalPages = await ref.watch(totalPagesProvider.future);
+  if (currentPage > totalPages) {
+    return [];
+  }
+  final photos = await ref.watch(filteredPhotosProvider.future);
+  return photos.skip((currentPage - 1) * pageSize).take(pageSize).toList();
 }

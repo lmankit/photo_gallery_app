@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:photo_gallery_app/providers/photo/photo_providers.dart';
 import 'package:photo_gallery_app/widgets/photo_card.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class PhotoListScreen extends ConsumerStatefulWidget {
   const PhotoListScreen({super.key});
@@ -21,7 +22,9 @@ class _PhotoListScreenState extends ConsumerState<PhotoListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final filteredPhotosAsync = ref.watch(filteredPhotosProvider);
+    final currentPage = ref.watch(currentPageProvider);
+    final totalPages = ref.watch(totalPagesProvider).valueOrNull ?? 1;
+    final paginatedPhotosAsync = ref.watch(paginatedPhotosProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -52,11 +55,12 @@ class _PhotoListScreenState extends ConsumerState<PhotoListScreen> {
               ),
               onChanged: (value) {
                 ref.read(searchQueryProvider.notifier).state = value;
+                ref.read(currentPageProvider.notifier).state = 1;
               },
             ),
           ),
           Expanded(
-            child: filteredPhotosAsync.when(
+            child: paginatedPhotosAsync.when(
               data: (photos) {
                 if (photos.isEmpty) {
                   return const Center(child: Text('No photos found'));
@@ -76,6 +80,23 @@ class _PhotoListScreenState extends ConsumerState<PhotoListScreen> {
               },
             ),
           ),
+          Consumer(
+            builder: (BuildContext context, WidgetRef ref, Widget? child) {
+              return Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: AnimatedSmoothIndicator(
+                  activeIndex: currentPage - 1,
+                  count: totalPages,
+                  effect: const WormEffect(),
+                  onDotClicked: (index) {
+                    ref.read(currentPageProvider.notifier).state = index + 1;
+                  },
+                ),
+              );
+            },
+          ),
+          Text('Page $currentPage of $totalPages'),
+          const SizedBox(height: 20),
         ],
       ),
     );

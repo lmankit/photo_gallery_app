@@ -58,6 +58,13 @@ class PhotoInfoScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   _buildInfoSection(
+                    icon: Icons.calendar_today,
+                    title: 'Created At',
+                    content: DateFormat('MMMM dd, yyyy - HH:mm')
+                        .format(photo.createdAtDate),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildInfoSection(
                     icon: Icons.description,
                     title: 'Description',
                     content: photo.description,

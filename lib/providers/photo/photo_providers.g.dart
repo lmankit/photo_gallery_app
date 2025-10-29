@@ -56,5 +56,38 @@ final refreshPhotosProvider = AutoDisposeFutureProvider<void>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef RefreshPhotosRef = AutoDisposeFutureProviderRef<void>;
+String _$totalPagesHash() => r'49e2a67b89abbb41ddd0c6f5e5b35e0cb98f9ae2';
+
+/// See also [totalPages].
+@ProviderFor(totalPages)
+final totalPagesProvider = AutoDisposeFutureProvider<int>.internal(
+  totalPages,
+  name: r'totalPagesProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$totalPagesHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef TotalPagesRef = AutoDisposeFutureProviderRef<int>;
+String _$paginatedPhotosHash() => r'0ac66e678e9ca4a33b04d47e7bfbc6add21dbac1';
+
+/// See also [paginatedPhotos].
+@ProviderFor(paginatedPhotos)
+final paginatedPhotosProvider = AutoDisposeFutureProvider<List<Photo>>.internal(
+  paginatedPhotos,
+  name: r'paginatedPhotosProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$paginatedPhotosHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef PaginatedPhotosRef = AutoDisposeFutureProviderRef<List<Photo>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

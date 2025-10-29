@@ -16,7 +16,12 @@ class MyApp extends StatelessWidget {
         title: 'Photo Gallery',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          primarySwatch: Colors.blue,
+          useMaterial3: true,
+          appBarTheme: const AppBarTheme(
+            centerTitle: true,
+            elevation: 0,
+          ),
         ),
         home: const PhotoListScreen(),
       ),
